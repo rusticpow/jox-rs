@@ -38,5 +38,31 @@ fn run_prompt() {
 }
 
 fn run(text: &str) {
+    let scanner = Scanner {
+        source: &text
+    };
+    let tokens = scanner.scan_tokens();
+    for token in tokens {
+        println!("{:?}", token);
+    }
+
     println!("{}", text);
+}
+
+#[derive(Debug)]
+struct Scanner<'a> {
+    source: &'a str,
+}
+
+impl Scanner<'_> {
+    fn scan_tokens(&self) -> Vec<Token> {
+        vec![Token{
+            token: "/"
+        }]
+    }
+}
+
+#[derive(Debug)]
+struct Token<'a> {
+    token: &'a str,
 }
