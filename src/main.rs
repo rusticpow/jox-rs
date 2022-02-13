@@ -1,9 +1,14 @@
+mod scan;
+
 use std::{
-    borrow::Cow,
     fs::File,
     io::{stdin, Read},
-    ops::Deref,
+    process::exit,
 };
+
+use scan::token::Token;
+
+use crate::scan::scanner::Scanner;
 
 fn main() {
     let mut args = std::env::args();
@@ -38,31 +43,21 @@ fn run_prompt() {
 }
 
 fn run(text: &str) {
-    let scanner = Scanner {
-        source: &text
-    };
+    let scanner = Scanner { source: &text, tokens: todo!(), start: todo!(), current: todo!(), line: todo!() };
     let tokens = scanner.scan_tokens();
-    for token in tokens {
-        println!("{:?}", token);
+    match tokens {
+        Ok(_) => {
+            for token in tokens {
+                println!("{:?}", token);
+            }
+        }
+        Err(err) => {
+            println!("{:?}", err);
+            exit(65);
+        }
     }
 
     println!("{}", text);
 }
 
-#[derive(Debug)]
-struct Scanner<'a> {
-    source: &'a str,
-}
 
-impl Scanner<'_> {
-    fn scan_tokens(&self) -> Vec<Token> {
-        vec![Token{
-            token: "/"
-        }]
-    }
-}
-
-#[derive(Debug)]
-struct Token<'a> {
-    token: &'a str,
-}
