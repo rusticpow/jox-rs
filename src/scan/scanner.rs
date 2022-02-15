@@ -12,9 +12,9 @@ pub struct Scanner<'a> {
 }
 
 impl Scanner<'_> {
-    fn scan_tokens(&self) -> Result<Vec<Token>, &str> {
+    pub fn scan_tokens(&self) -> Result<Vec<Token>, &str> {
         while !self.is_at_end() {
-            scan_token();
+            self.scan_token();
         }
 
         self.tokens.push(Token {
@@ -70,7 +70,83 @@ impl Scanner<'_> {
             '-' => self.add_token(TokenType::Minus),
             '+' => self.add_token(TokenType::Plus),
             ';' => self.add_token(TokenType::Semicolon),
-            '*' => self.add_token(TokenType::Star),
+            '*' => self.add_token(TokenType::Star),    
+                    '!' => self.add_token(if self.match_next('=') {
+                TokenType::BangEqual
+            } else {
+                TokenType::Bang
+            }),
+            '=' => self.add_token(if self.match_next('=') {
+                TokenType::EqualEqual
+            } else {
+                TokenType::Equal
+            }),
+            '<' => self.add_token(if self.match_next('=') {
+                TokenType::LessEqual
+            } else {
+                TokenType::Less
+            }),
+            '>' => self.add_token(if self.match_next('=') {
+                TokenType::GreaterEqual
+            } else {
+                TokenType::Greater
+            }),
+            '/' => {
+                if self.match_next('/') {
+                    while self.peek() != '\n' && !self.is_at_end() {
+                        self.advance();
+                    }
+                }
+            }
+            ' ' | '\r' | '\t' => {}
+            '\n' => {
+                *self.line += 1;
+            }
+            '"' => {
+                self.string();
+            }
+            _ => println!("Unexpected character: line: '{}'", self.line),
         }
+    }
+
+    fn match_next(&self, expected: char) -> bool {
+        if self.is_at_end() {
+            return false;
+        }
+
+        if self.source.chars().nth(*self.current).unwrap() != expected {
+            return false;
+        }
+
+        *self.current += 1;
+        return true;
+    }
+
+    fn peek(&self) -> char {
+        if self.is_at_end() {
+            return '\0';
+        }
+
+        return self.source.chars().nth(*self.current).unwrap();
+    }
+
+    fn string(&self) {
+        while self.peek() != '"' && !self.is_at_end() {
+            if self.peek() == '\n' {
+                *self.line += 1;
+            }
+
+            self.advance();
+        }
+
+        if self.is_at_end() {
+            println!("Unterminated string. {:?}", self.line);
+            return;
+        }
+
+        self.advance();
+
+        let value = &self.source[*self.start + 1..*self.current - 1];
+        self.add_token_with_literal(TokenType::String, Some(Box::new(value.to_owned())));
     }
 }
