@@ -43,8 +43,27 @@ fn run_prompt() {
 }
 
 fn run(text: &str) {
-    let scanner = Scanner { source: &text, tokens: todo!(), start: todo!(), current: todo!(), line: todo!() };
-    let tokens = scanner.scan_tokens();
+    let scanner = Scanner { source: text, tokens: todo!(), start: todo!(), current: todo!(), line: todo!() };
+    let tokens = {
+        let ref this = scanner;
+        while !this.is_at_end() {
+            this.scan_token();
+        }
+
+        this.tokens.push(Token {
+            token_type: &TokenType::EOF,
+            lexeme: "",
+            line: this.line,
+            literal: None,
+        });
+
+        Ok(vec![Token {
+            token_type: todo!(),
+            lexeme: todo!(),
+            literal: todo!(),
+            line: todo!(),
+        }])
+    };
     match tokens {
         Ok(_) => {
             for token in tokens {

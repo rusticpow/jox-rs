@@ -1,14 +1,23 @@
 use std::any::Any;
 
-
 #[derive(Debug)]
 pub struct Token<'a> {
-    pub(crate) token_type: &'a TokenType,
+    pub(crate) token_type: TokenType,
     pub(crate) lexeme: &'a str,
     pub(crate) literal: Option<Box<dyn Any>>,
     pub(crate) line: &'a i32,
 }
 
+impl<'a> Token<'a> {
+    pub(crate) fn new(token :&'a Token) -> Token<'a> {
+        Token {
+            token_type: token.token_type,
+            lexeme: token.lexeme,
+            literal: token.literal,
+            line: token.line,
+        }
+    }
+}
 
 #[derive(Debug)]
 pub enum TokenType {
