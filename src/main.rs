@@ -6,9 +6,7 @@ use std::{
     process::exit,
 };
 
-use scan::token::Token;
-
-use crate::scan::scanner::Scanner;
+use scan::{token::Token, scanner::Scanner};
 
 fn main() {
     let mut args = std::env::args();
@@ -43,40 +41,10 @@ fn run_prompt() {
 }
 
 fn run(text: &str) {
-    let scanner = Scanner { source: text, tokens: todo!(), start: todo!(), current: todo!(), line: todo!() };
-    let tokens = {
-        let ref this = scanner;
-        while !this.is_at_end() {
-            this.scan_token();
-        }
+    let scanner = Scanner { source: text };
+    let tokens = scanner.scan_tokens().expect("Scanner failed");
 
-        this.tokens.push(Token {
-            token_type: &TokenType::EOF,
-            lexeme: "",
-            line: this.line,
-            literal: None,
-        });
-
-        Ok(vec![Token {
-            token_type: todo!(),
-            lexeme: todo!(),
-            literal: todo!(),
-            line: todo!(),
-        }])
-    };
-    match tokens {
-        Ok(_) => {
-            for token in tokens {
-                println!("{:?}", token);
-            }
-        }
-        Err(err) => {
-            println!("{:?}", err);
-            exit(65);
-        }
-    }
-
-    println!("{}", text);
+    println!("{:?}", tokens)
 }
 
 
