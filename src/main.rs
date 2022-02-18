@@ -3,10 +3,9 @@ mod scan;
 use std::{
     fs::File,
     io::{stdin, Read},
-    process::exit,
 };
 
-use scan::{token::Token, scanner::Scanner};
+use scan::scanner::Scanner;
 
 fn main() {
     let mut args = std::env::args();
@@ -46,5 +45,3 @@ fn run(text: &str) {
 
     println!("{:?}", tokens)
 }
-
-

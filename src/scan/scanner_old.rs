@@ -95,11 +95,11 @@ impl<'a> ScannerOld<'a> {
             // '+' => self.add_token(&TokenType::Plus),
             // ';' => self.add_token(&TokenType::Semicolon),
             // '*' => self.add_token(&TokenType::Star),
-            //         '!' => self.add_token(if self.match_next('=') {
-            //     &TokenType::BangEqual
-            // } else {
-            //     &TokenType::Bang
-            // }),
+                    '!' => self.add_token(if self.match_next('=') {
+                &TokenType::BangEqual
+            } else {
+                &TokenType::Bang
+            }),
             // '=' => self.add_token(if self.match_next('=') {
             //     &TokenType::EqualEqual
             // } else {
