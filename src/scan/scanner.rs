@@ -102,6 +102,13 @@ impl<'a> InnerScanner<'a> {
                     None => TokenType::None,
                 }
             }
+            'o' => {
+                if self.match_next('r') {
+                    TokenType::Or
+                } else {
+                    TokenType::None
+                }
+            }
             // Reserved Words and Identifiers ...
             _ => {
                 if self.is_digit(c) {
@@ -109,6 +116,8 @@ impl<'a> InnerScanner<'a> {
                     literal = Some(number_result.1);
 
                     number_result.0
+                } else if self.is_alpha(c) {
+                    self.identifier()
                 } else {
                     TokenType::None
                 }
@@ -129,7 +138,23 @@ impl<'a> InnerScanner<'a> {
         })
     }
 
-    fn is_digit(&mut self, c: char) -> bool {
+    fn identifier(&mut self) -> TokenType {
+        while self.is_alpha_numeric(self.peek()) {
+            self.advance();
+        }
+
+        TokenType::Identifier
+    }
+
+    fn is_alpha_numeric(&self, c: char) -> bool {
+        self.is_alpha(c) || self.is_digit(c)
+    }
+
+    fn is_alpha(&self, c: char) -> bool {
+        (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
+    }
+
+    fn is_digit(&self, c: char) -> bool {
         c >= '0' && c <= '9'
     }
 
